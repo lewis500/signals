@@ -1,0 +1,14 @@
+export const NUM_SIGNALS = 15;
+export const ROAD_LENGTH = 1000;
+export const NUM_CARS = 1400;
+export const RUSH_LENGTH = 2200;
+export const TRIP_LENGTH = 220;
+export const VF = 1;
+export const SPACE = 2;
+export const KJ = 1
+export const CYCLE = 100;
+export const GREEN = 60;
+export const OFFSET = 15;
+export const MEMORY_LENGTH = 25;
+export const W = 1/2;
+export const Q0 = 1/3;
