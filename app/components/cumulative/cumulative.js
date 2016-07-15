@@ -52,3 +52,5 @@ class CumPlot extends React.Component{
     );
   }
 }
+
+export default CumPlot

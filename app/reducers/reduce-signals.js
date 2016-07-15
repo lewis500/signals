@@ -1,7 +1,7 @@
 //@flow
 import { ROAD_LENGTH, NUM_SIGNALS, CYCLE, GREEN, OFFSET } from "../constants/constants.js";
-import {map,range,forEach} from 'lodash';
-import {Signal,SignalHistoryDatum} from '../constants/types';
+import {map,range,forEach,isEqual} from 'lodash';
+import {Signal,MemoryDatum} from '../constants/types';
 import type {Action,Signals} from '../constants/types';
 import {TICK} from '../constants/actions';
 
@@ -23,14 +23,11 @@ export default function(signals:Signals, time:number, action:Action):Signals {
   switch (action.type) {
     case TICK:
       for (var s of signals) {
-        if ((time % CYCLE) === s.oA) {
+        if (isEqual(time % CYCLE, s.oA)) {
           s.green = true;
           s.lastGreen = time;
-        } else if ((time % CYCLE) === (s.oA + GREEN) % CYCLE) {
-          s.history = [
-            ...s.history.slice(0,2),
-            new SignalHistoryDatum(s.lastGreen, time, s.index)
-          ];
+        } else if (isEqual(time % CYCLE,(s.oA + GREEN) % CYCLE)) {
+          s.remember(time);
           s.green = false;
         }
       }

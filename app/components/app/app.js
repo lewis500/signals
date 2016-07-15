@@ -1,6 +1,6 @@
 //@flow
 import { connect } from 'react-redux';
-import React from 'react';
+import React,{Component} from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import './style-app.scss';
 import { timer } from 'd3-timer';
@@ -11,17 +11,17 @@ import TimePlot from '../time-plot/time-plot.js';
 import CumPlot from '../cumulative/cumulative.js';
 import MFDPlot from '../mfd-plot/mfd-plot.js';
 import type {State} from 'redux';
-import type {Loc,CarState,Signal,Time,Car, Cell,Measurement} from '../../constants/types';
+import type {Loc,TrafficState,Signal,Time,Car, Cell,Measurement} from '../../constants/types';
 
 type Props = {
   signals: Array<Signal>;
-  cars:CarState;
+  traffic:TrafficState;
   time:Time;
   mfd:Array<any>;
   tick: Function;
 }
 
-class AppComponent extends React.Component{
+class AppComponent extends Component{
   paused = true;
   timer = null;
   props:Props;
@@ -39,14 +39,14 @@ class AppComponent extends React.Component{
     return (
       <div>
         <button onClick={this.pausePlay}>Pause/Play</button>
-        <Road signals={this.props.signals} cars={this.props.cars.moving}/>
+        <Road signals={this.props.signals} cars={this.props.traffic.moving}/>
         <MFDPlot
           mfd={this.props.mfd}
-          measurement={this.props.cars.measurement} />
-        <CumPlot history={this.props.cars.history} />
+          measurement={this.props.traffic.measurement} />
+        <CumPlot history={this.props.traffic.history} />
       </div>
     );
-  };
+  }
 };
 
 function mapActionsToProps(dispatch):Object{
@@ -61,7 +61,7 @@ function mapActionsToProps(dispatch):Object{
 }
 
 function mapStateToProps(state:State):State{
-  return pick(state, ['signals', 'cars', 'time','mfd' ]);
+  return pick(state, ['signals', 'traffic', 'time','mfd' ]);
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(AppComponent);

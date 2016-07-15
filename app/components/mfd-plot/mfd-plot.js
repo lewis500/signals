@@ -2,10 +2,9 @@
 import React,{Component} from 'react';
 import col from "../../style/colors";
 import './style-mfd-plot.scss';
-import _ from 'lodash';
 import { NUM_SIGNALS} from "../../constants/constants.js";
 import type {MFD,Measurement} from '../../constants/types';
-const { g, rect, circle } = React.DOM;
+const { circle } = React.DOM;
 const PT = React.PropTypes;
 
 const WIDTH = 250,
@@ -19,14 +18,14 @@ type Props = {
   mfd: MFD;
 }
 
-const Dot = props => {
+function Dot(props){
   let measurement:Measurement = props.measurement;
   return circle({
     transform: `translate(${xScale(measurement.k)},${yScale(measurement.q)})`,
     className: 'dot',
     r: 5
   });
-};
+}
 
 function pathMaker(data:Array<any>, xVar:string, yVar:string):string {
   let i = data.length,

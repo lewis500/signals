@@ -1,14 +1,11 @@
 TO DO
 
 SHORT TERM
-+ actionNames
++ calculate the super-mfd using the technique from macro-offset file
++ make offset a state variable
 
 MEDIUM TERM
-+ calculate the mfd
-+ add the mfd line
 
 
 LONG TERM
-+ plot the mfd
-+ make the ring road responsive?
 + try using an event queue for the signals

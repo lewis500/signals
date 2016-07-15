@@ -7,7 +7,7 @@ import { ROAD_LENGTH } from '../../constants/constants.js';
 const PT = React.PropTypes;
 const { rect, g } = React.DOM;
 
-const RADIUS = 250,
+const RADIUS = 125,
   ROADWIDTH = 10,
   MAR = 20,
   LENGTH = 2 * (RADIUS + MAR + ROADWIDTH);

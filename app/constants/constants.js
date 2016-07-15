@@ -8,7 +8,6 @@ export const SPACE = 2;
 export const KJ = 1
 export const CYCLE = 100;
 export const GREEN = 60;
-export const OFFSET = 15;
 export const MEMORY_LENGTH = 25;
 export const W = 1/2;
 export const Q0 = 1/3;
