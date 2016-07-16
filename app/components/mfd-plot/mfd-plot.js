@@ -1,9 +1,10 @@
 //@flow
 import React,{Component} from 'react';
 import col from "../../style/colors";
-import './style-mfd-plot.scss';
+import style from './style-mfd-plot.scss';
 import { NUM_SIGNALS} from "../../constants/constants.js";
 import type {MFD,Measurement} from '../../constants/types';
+import SuperMFD from '../../reducers/super-mfd';
 const { circle } = React.DOM;
 const PT = React.PropTypes;
 
@@ -51,6 +52,9 @@ class MFDPlot extends Component{
           <path
             d={pathMaker(mfd, 'k', 'q')}
             className='mfd-plot'/>
+          <path
+            d={pathMaker(SuperMFD, 'k', 'q')}
+            className={'super-mfd-plot'}/>
         </g>
       </svg>
     );

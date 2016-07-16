@@ -3,8 +3,7 @@ import type {Action} from './types';
 
 export const TICK = 'TICK';
 export const RESET = 'RESET';
-export const SET_MFD = 'SET_MFD';
-
+export const SET_OFFSET = 'SET_OFFSET';
 
 
 export const actions = {
@@ -14,7 +13,7 @@ export const actions = {
     reset():Action{
       return {type: RESET};
     },
-    setMFD():Action{
-      return {type: SET_MFD};
+    setOffset(offset:number):Action{
+    	return {type: SET_OFFSET, offset};
     }
 };

@@ -3,7 +3,7 @@ import { ROAD_LENGTH, NUM_CARS, SPACE, VF, RUSH_LENGTH, MEMORY_LENGTH, TRIP_LENG
 import { range, filter, isEqual, forEach, random, partition, concat, sortBy } from 'lodash';
 import { sum } from 'd3-array';
 import { Car, HistoryDatum } from '../constants/types';
-import type { Loc, Action, Time, Signal, Cars, Cell, TrafficState as TrafficState, Measurement } from '../constants/types';
+import type { Loc, History, Action, Time, Signal, Cars, Signals, Cell, TrafficState, Measurement } from '../constants/types';
 import { TICK } from '../constants/actions';
 
 const population: Cars = range(NUM_CARS)
@@ -13,35 +13,34 @@ const population: Cars = range(NUM_CARS)
 		return new Car(x, tA, i);
 	});
 
-let emptyCars: Cars = []
+let emptyCars: Cars = [];
+let emptyHistory: History = [];
 
-export const traffic_initial = {
+export const TRAFFIC_INITIAL = {
 	population,
 	waiting: population,
 	moving: emptyCars,
 	queueing: emptyCars,
-	history: emptyCars,
+	history: emptyHistory,
 	cells: range(ROAD_LENGTH)
 		.map(x => -SPACE),
-	measurement: { q: 0, k: 0 },
-	totals: { q: 0, n: 0 }
+	measurement: { q: 0, k: 0, q_temp: 0, n_temp: 0 }
 };
 
-function reduceTraffic(traffic: TrafficState, signals: Array < Signal > , time: Time, action: Action): TrafficState {
-	switch (action.type) {
+function reduceTraffic(traffic: TrafficState, signals: Signals, time: Time, action: Action): TrafficState {
+	switch(action.type) {
 		case TICK:
 			let movingNew = sortBy(traffic.moving, 'x'),
 				taken = Array(ROAD_LENGTH),
-				{ waiting, cells, queueing, measurement , history } = traffic,
-				{ q, n } = traffic.totals,
+				{ waiting, cells, queueing, measurement, history } = traffic,
+				{ q_temp, n_temp, q, k } = traffic.measurement,
 				queueingNew: Cars = [];
 
-
 			//take care of the signals
-			for (let s of signals) taken[s.x] = !s.green;
+			for(let s of signals) taken[s.x] = !s.green;
 
 			function processCar(car: Car): void {
-				if (!taken[car.x]) {
+				if(!taken[car.x]) {
 					taken[car.x] = true; //it's taken
 					movingNew.push(car);
 				} else queueingNew.push(car);
@@ -55,24 +54,22 @@ function reduceTraffic(traffic: TrafficState, signals: Array < Signal > , time: 
 			forEach(arriving, processCar);
 
 			//process the moving traffic
-			for (var car of movingNew) {
+			for(var car of movingNew) {
 				let nextSpace = (car.x + 1) % ROAD_LENGTH;
-				if (!taken[nextSpace] && ((time - cells[nextSpace]) > SPACE)) {
+				if(!taken[nextSpace] && ((time - cells[nextSpace]) > SPACE)) {
 					car.move(nextSpace);
-					q++;
+					q_temp++;
 				}
 				cells[car.x] = time;
 			}
 
-			n += movingNew.length;
+			n_temp += movingNew.length;
 
-			if (isEqual(time % MEMORY_LENGTH, 0)) {
-				measurement = {
-					k: n / ROAD_LENGTH / MEMORY_LENGTH,
-					q: q / ROAD_LENGTH / MEMORY_LENGTH
-				};
-				n = 0;
-				q = 0;
+			if(isEqual(time % MEMORY_LENGTH, 0)) {
+				k = n_temp / ROAD_LENGTH / MEMORY_LENGTH;
+				q = q_temp / ROAD_LENGTH / MEMORY_LENGTH;
+				n_temp = 0;
+				q_temp = 0;
 			}
 
 			history.push(
@@ -80,10 +77,10 @@ function reduceTraffic(traffic: TrafficState, signals: Array < Signal > , time: 
 					NUM_CARS - waitingNew.length - queueingNew.length,
 					NUM_CARS - waitingNew.length - movingNew.length - queueingNew.length,
 					time)
-				);
+			);
 
 			//take care of the time stuff
-			for (var c of movingNew) cells[c.x] = time;
+			for(var c of movingNew) cells[c.x] = time;
 
 			//get rid of the exited people
 			movingNew = filter(movingNew, d => d.moved <= TRIP_LENGTH);
@@ -93,10 +90,14 @@ function reduceTraffic(traffic: TrafficState, signals: Array < Signal > , time: 
 				moving: movingNew,
 				queueing: queueingNew,
 				waiting: waitingNew,
-				measurement,
-				totals: {q,n}
+				measurement: {
+					q,
+					k,
+					q_temp,
+					n_temp
+				}
 			};
-			
+
 		default:
 			return traffic;
 	}
