@@ -13,3 +13,5 @@ export const W = 1/2;
 export const Q0 = 1/3;
 export const K0 = 1/3;
 export const OFFSET_INITIAL = 15;
+export const UPDATE_FREQUENCY = 3*CYCLE;
+export const GAP = ROAD_LENGTH/NUM_SIGNALS;
