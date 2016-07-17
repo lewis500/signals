@@ -6,7 +6,7 @@ import { MFDEntry } from '../constants/types';
 import type { Action, MFD } from '../constants/types';
 import { SET_OFFSET } from '../constants/actions';
 
-const doubleMod = (a:number,b:number) => {
+const doubleMod = (a: number, b: number) => {
   return (a % b + b) % b;
 };
 
@@ -15,7 +15,7 @@ class TableEntry {
   c: number;
   g: number;
   x: number;
-  constructor(i,offset) {
+  constructor(i, offset) {
     const v = (i < 0 ? -W : VF),
       x = DISTANCE * i,
       travel_time = x / v,
@@ -31,7 +31,7 @@ class TableEntry {
 function loopOverEntries(direction, offset) {
   let [g, i, res] = [999, 0, []];
   while ((g > 0) && (Math.abs(i) < 100)) { //MAKE SURE THAT G IS DECLINING?
-    const entry = new TableEntry(i,offset);
+    const entry = new TableEntry(i, offset);
     g = entry.g;
     res.push(entry);
     if (direction === 'forward') i++;
@@ -50,8 +50,8 @@ function findMin(k: number, table: Array < TableEntry > ): MFDEntry {
 
 export const MFD_INITIAL = createMFD(OFFSET_INITIAL);
 
-export function createMFD(offset:number) {
-  const table = flatMap(['forward', 'backward'], direction=>loopOverEntries(direction, offset));
+export function createMFD(offset: number) {
+  const table = flatMap(['forward', 'backward'], direction => loopOverEntries(direction, offset));
   return range(.01, 1.01, .01)
     .map(k => findMin(k, table));
 }

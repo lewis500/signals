@@ -15,7 +15,7 @@ export const SIGNALS_INITIAL: Signals = range(NUM_SIGNALS)
 forEach(SIGNALS_INITIAL, function(signal,i,k):void{
   let next = i < (k.length - 1) ? k[i + 1] : k[0];
   signal.setNext(next);
-})
+});
 
 export default function(signals: Signals, time: number, offset: number, action: Action): Signals {
   switch (action.type) {
