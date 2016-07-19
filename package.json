@@ -17,6 +17,8 @@
     "babel-preset-es2015": "^6.0.15",
     "babel-preset-react": "^6.0.15",
     "css-loader": "^0.21.0",
+    "d3-array": "^1.0.0",
+    "d3-timer": "^1.0.1",
     "flow-bin": "^0.27.0",
     "iflow-lodash": "^1.1.17",
     "iflow-react-redux": "^1.1.17",
