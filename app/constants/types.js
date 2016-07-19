@@ -29,7 +29,6 @@ export type Cells = Array<Cell>;
 
 export type RootState = {
   time: Time;
-  offset: number;
   a: AState;
 };
 

@@ -1,5 +1,5 @@
 //@flow
-import {VF,K0,KJ,W,ROAD_LENGTH,INITIAL_CYCLE,GREEN,CYCLE, NUM_SIGNALS} from '../constants/constants';
+import {VF,K0,KJ,W,ROAD_LENGTH,INITIAL_CYCLE,GREEN, GAP, CYCLE, NUM_SIGNALS} from '../constants/constants';
 import type{MFD} from '../constants/types';
 import {map,range,lt,lte} from 'lodash';
 import {createMFD} from './reduce-mfd';
@@ -15,7 +15,7 @@ export default map(
     }else if (lte(gc,kk) && lt(kk,1+VF/W*(1 - gc)) ){
       p = 1/ VF * (1 - kk) / (1 - gc);
     }else p = -1/W;
-    let offset = p * ROAD_LENGTH/NUM_SIGNALS,
+    let offset = p * GAP,
     	mfd = createMFD(offset);
   	return mfd[i];
   });
