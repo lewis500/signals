@@ -43,6 +43,9 @@ class AppComponent extends Component {
   }
 };
 
+// <TimePlot signals={this.props.signals} time={this.props.time}/>
+
+
 function mapActionsToProps(dispatch: Function): Object {
   return {
     tick() {

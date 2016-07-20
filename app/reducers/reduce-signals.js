@@ -4,7 +4,6 @@ import { map, range, forEach, isEqual } from 'lodash';
 import { Signal, MemoryDatum } from '../constants/types';
 import type { Action, Signals, Cars, Time } from '../constants/types';
 import { TICK } from '../constants/actions';
-
 const EmptyLinks: Array < number > = map(range(NUM_SIGNALS), i => 0);
 
 function retimeSignals(signals: Signals, moving:Cars, time:Time) {
@@ -30,7 +29,7 @@ function retimeSignals(signals: Signals, moving:Cars, time:Time) {
 export default function(signals: Signals, moving: Cars, time: Time, action: Action): Signals {
   switch (action.type) {
     case TICK:
-      // signals = retimeSignals(signals, moving, time);
+      signals = retimeSignals(signals, moving, time);
       for (var s of signals) {
         if (isEqual(time % CYCLE, s.oA)) {
           s.green = true;
@@ -48,7 +47,7 @@ export default function(signals: Signals, moving: Cars, time: Time, action: Acti
 
 export const SIGNALS_INITIAL: Signals = range(NUM_SIGNALS)
   .map(index => {
-    let oA = (FRO * index) % CYCLE,
+    let oA = Math.round((FRO * index) % CYCLE),
       x = Math.round(index / NUM_SIGNALS * ROAD_LENGTH);
     return new Signal(index, oA, x);
   });

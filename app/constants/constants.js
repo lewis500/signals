@@ -1,6 +1,6 @@
-export const NUM_SIGNALS = 15;
+export const NUM_SIGNALS = 20;
 export const ROAD_LENGTH = 1000;
-export const NUM_CARS = 1400;
+export const NUM_CARS = 2400;
 export const RUSH_LENGTH = 2200;
 export const TRIP_LENGTH = 220;
 export const VF = 1;

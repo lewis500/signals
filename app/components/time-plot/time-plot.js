@@ -24,7 +24,7 @@ const SignalBars = ({ signals, xScale }) => {
       width: xScale(d.b) - xScale(d.a),
       height: 5,
       className: 'signal-bar',
-      key: i,
+      key: d.id,
       y: -5
     });
   });
