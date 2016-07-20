@@ -2,11 +2,10 @@
 import type { RootState, Cars, AState, Time, Action } from '../constants/types';
 import { TICK, SET_OFFSET } from '../constants/actions';
 import signalsReduce, { SIGNALS_INITIAL } from './reduce-signals';
-import mfdReduce, { MFD_INITIAL } from './reduce-mfd';
+import { MFD_INITIAL } from './reduce-mfd';
 import trafficReduce, { TRAFFIC_INITIAL } from './reduce-traffic';
 import { GAP, NUM_SIGNALS } from '../constants/constants';
 import { isEqual, groupBy,map,range } from 'lodash';
-
 
 function timeReduce(time: Time, action: Action): Time {
 	return isEqual(action.type, TICK) ? time + 1 : time;
@@ -21,13 +20,12 @@ const EmptyLinks:Array<number> = map(range(NUM_SIGNALS), i=> 0);
 // }
 
 
-function aReduce(a: AState, time: Time, offset: number, action: Action): AState {
+function aReduce(a: AState, time: Time, action: Action): AState {
 	switch(action.type) {
 		case TICK:
-			let signals = signalsReduce(a.signals, time, offset, action),
-				mfd = mfdReduce(a.mfd, offset, action),
+			let signals = signalsReduce(a.signals, a.traffic.moving, time, action),
 				traffic = trafficReduce(a.traffic, signals, time, action);
-			return { signals, mfd, traffic };
+			return { signals, traffic };
 		default:
 			return a;
 	}
@@ -36,7 +34,6 @@ function aReduce(a: AState, time: Time, offset: number, action: Action): AState 
 const ROOT_INITIAL = {
 	time: 0,
 	a: {
-		mfd: MFD_INITIAL,
 		signals: SIGNALS_INITIAL,
 		traffic: TRAFFIC_INITIAL
 	}
@@ -44,9 +41,8 @@ const ROOT_INITIAL = {
 
 function root(state: RootState = ROOT_INITIAL, action: Action): RootState {
 	let time = timeReduce(state.time, action),
-		offset = offsetReduce(state.offset, state.a.traffic.moving, action),
-		a = aReduce(state.a, time, offset, action);
-	return { time, offset, a };
+		a = aReduce(state.a, time, action);
+	return { time, a };
 }
 
 export default root;
