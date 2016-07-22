@@ -38,12 +38,11 @@ class AppComponent extends Component {
         <button onClick={this.pausePlay}>Pause/Play</button>
         <Road signals={this.props.signals} cars={this.props.traffic.moving}/>
         <CumPlot history={this.props.traffic.history} />
+        <TimePlot signals={this.props.signals} time={this.props.time}/>
       </div>
     );
   }
 };
-
-// <TimePlot signals={this.props.signals} time={this.props.time}/>
 
 
 function mapActionsToProps(dispatch: Function): Object {
@@ -55,7 +54,11 @@ function mapActionsToProps(dispatch: Function): Object {
 }
 
 function mapStateToProps(state: RootState): Object {
-  return pick(state.a, ['signals', 'traffic', 'time']);
+  return {
+    time: state.time,
+    signals: state.a.signals,
+    traffic: state.a.traffic
+  };
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(AppComponent);

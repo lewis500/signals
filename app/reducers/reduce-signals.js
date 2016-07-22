@@ -1,5 +1,5 @@
 //@flow
-import { ROAD_LENGTH, NUM_SIGNALS, CYCLE, GREEN, GAP, K0, RESET_FREQUENCY, FRO, BRO } from "../constants/constants.js";
+import { ROAD_LENGTH, NUM_SIGNALS, CYCLE, GREEN, GAP, K0, UPDATE_FREQUENCY, FRO, BRO } from "../constants/constants.js";
 import { map, range, forEach, isEqual } from 'lodash';
 import { Signal, MemoryDatum } from '../constants/types';
 import type { Action, Signals, Cars, Time } from '../constants/types';
@@ -7,7 +7,7 @@ import { TICK } from '../constants/actions';
 const EmptyLinks: Array < number > = map(range(NUM_SIGNALS), i => 0);
 
 function retimeSignals(signals: Signals, moving:Cars, time:Time) {
-  switch (time % RESET_FREQUENCY) {
+  switch (time % UPDATE_FREQUENCY) {
     case 0:
       const links:Array<number> = EmptyLinks.slice();
       for (var car of moving) {
@@ -29,7 +29,7 @@ function retimeSignals(signals: Signals, moving:Cars, time:Time) {
 export default function(signals: Signals, moving: Cars, time: Time, action: Action): Signals {
   switch (action.type) {
     case TICK:
-      signals = retimeSignals(signals, moving, time);
+      // signals = retimeSignals(signals, moving, time);
       for (var s of signals) {
         if (isEqual(time % CYCLE, s.oA)) {
           s.green = true;

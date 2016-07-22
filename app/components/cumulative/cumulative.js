@@ -3,7 +3,7 @@ import React from 'react';
 import col from "../../style/colors";
 import './style-cum-plot.scss';
 import _ from 'lodash';
-import { NUM_SIGNALS, CYCLE, GREEN, OFFSET, RUSH_LENGTH, NUM_CARS } from "../../constants/constants";
+import { NUM_SIGNALS, CYCLE, GREEN, RUSH_LENGTH, NUM_CARS } from "../../constants/constants";
 import {HistoryDatum} from '../../constants/types';
 const { g, rect } = React.DOM;
 const PT = React.PropTypes;

@@ -138,7 +138,7 @@ export class Signal {
   }
   remember(time: Time): void {
     this.memory = [
-      ...this.memory.slice(0, 2),
+      ...this.memory.slice(0, 4),
       new MemoryDatum(this.lastGreen, time, this.index)
     ];
   }
