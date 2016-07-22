@@ -1,5 +1,5 @@
 //@flow
-import {VF,K0,KJ,W,ROAD_LENGTH,INITIAL_CYCLE,GREEN, GAP, CYCLE, NUM_SIGNALS} from '../constants/constants';
+import {VF,K0,W,ROAD_LENGTH,CYCLE,GREEN, GAP, CYCLE, NUM_SIGNALS} from '../constants/constants';
 import type{MFD} from '../constants/types';
 import {map,range,lt,lte} from 'lodash';
 import {createMFD} from './reduce-mfd';

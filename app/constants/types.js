@@ -29,7 +29,9 @@ export type Cells = Array<Cell>;
 
 export type RootState = {
   time: Time;
-  a: AState;
+  signals: Signals;
+  traffic: TrafficState;
+  mfd: MFD;
 };
 
 export type TrafficState = {
@@ -40,12 +42,6 @@ export type TrafficState = {
   moving: Cars;
   cells: Cells;
   measurement: Measurement;
-};
-
-export type AState = {
-	signals: Signals;
-	traffic: TrafficState;
-	mfd: MFD;
 };
 
 export class HistoryDatum {

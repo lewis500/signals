@@ -56,8 +56,8 @@ function mapActionsToProps(dispatch: Function): Object {
 function mapStateToProps(state: RootState): Object {
   return {
     time: state.time,
-    signals: state.a.signals,
-    traffic: state.a.traffic
+    signals: state.signals,
+    traffic: state.traffic
   };
 }
 
