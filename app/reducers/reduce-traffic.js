@@ -2,8 +2,8 @@
 import { ROAD_LENGTH, NUM_CARS, SPACE, VF, RUSH_LENGTH, MEMORY_LENGTH, TRIP_LENGTH } from "../constants/constants.js";
 import { range, filter, isEqual, forEach, random, partition, concat, sortBy } from 'lodash';
 import { sum } from 'd3-array';
-import { Car, HistoryDatum } from '../constants/types';
-import type { Loc, History, Action, Time, Signal, Cars, Signals, Cell, TrafficState, Measurement } from '../constants/types';
+import { Car,  } from '../constants/types';
+import type { HistoryDatum, Loc, History, Action, Time, Signal, Cars, Signals, Cell, TrafficState, Measurement } from '../constants/types';
 import { TICK } from '../constants/actions';
 
 const population: Cars = range(NUM_CARS)
@@ -72,12 +72,11 @@ function reduceTraffic(traffic: TrafficState, signals: Signals, time: Time, acti
 				q_temp = 0;
 			}
 
-			history.push(
-				new HistoryDatum(
-					NUM_CARS - waitingNew.length - queueingNew.length,
-					NUM_CARS - waitingNew.length - movingNew.length - queueingNew.length,
-					time)
-			);
+			history.push({
+					a: NUM_CARS - waitingNew.length - queueingNew.length,
+					e: NUM_CARS - waitingNew.length - movingNew.length - queueingNew.length,
+					t: time
+				});
 
 			//take care of the time stuff
 			for(var c of movingNew) cells[c.x] = time;

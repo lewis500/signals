@@ -1,8 +1,15 @@
 @import '~material-colors/dist/colors';
 
 .signal-bar{
-	fill: $md-green-500;
 	stroke: none;
+}
+
+.signal-bar.green{
+	fill: $md-green-500;
+}
+.signal-bar.red{
+	// fill: $md-red-500;
+	fill: none;
 }
 
 .bg{

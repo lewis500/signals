@@ -22,23 +22,15 @@ function xScale (v:number,time:number):number{
   return (v - a) / (4*CYCLE) * WIDTH;
 }
 
-const SignalBars = ({ signals, xScale, time }) => {
-  let ss = flatten(map(signals, d => d.memory));
-  const signalsRects = map(ss, (d, i) => {
-    return rect({
-      transform: `translate(${xScale(d.a,time)},${yScale(d.id)})`,
-      width: xScale(d.b,time) - xScale(d.a,time),
-      height: 5,
-      className: 'signal-bar',
-      key: i,
-      y: -5
-    });
-  });
-
-  return g({
-    className: 'g-signals'
-  }, signalsRects);
-};
+// const SignalBars = ({ signals, xScale, time }) => {
+//
+//
+//   return signalsRects;
+//
+//   // return g({
+//   //   className: 'g-signals'
+//   // }, signalsRects);
+// };
 
 type Props = {
   signals: Signals;
@@ -48,16 +40,27 @@ type Props = {
 class TimePlot extends React.Component{
   props:Props;
 
+  createSignals(){
+    let ss = flatten(map(this.props.signals, d => d.memory));
+    return map(ss, (d, i) => {
+      return rect({
+        transform: `translate(${xScale(d.time,this.props.time)},${yScale(d.index)})`,
+        className: 'signal-bar ' + (d.green ? 'green' : 'red'),
+        key: i,
+        width: 12,
+        x: -6,
+        y: -1,
+        height: 2
+      });
+    });
+  };
+
   render() {
     return (
       <svg width={WIDTH+2*MAR} height={HEIGHT+2*MAR}>
         <g transform={`translate(${MAR},${MAR})`}>
         	<rect width={WIDTH} height={HEIGHT} className='bg'/>
-          <SignalBars
-          signals={this.props.signals}
-          xScale={xScale}
-          time={this.props.time}
-          />
+          {this.createSignals()}
         </g>
       </svg>
     );

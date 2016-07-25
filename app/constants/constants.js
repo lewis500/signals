@@ -16,5 +16,4 @@ export const K0 = 1/3;
 export const UPDATE_FREQUENCY = 3*CYCLE;
 export const GAP = ROAD_LENGTH/NUM_SIGNALS;
 export const FRO = GAP/VF;
-// export const FRO = 15;
 export const BRO = -GAP/W;

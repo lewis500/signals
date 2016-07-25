@@ -1,7 +1,7 @@
 //@flow
 import { ROAD_LENGTH, NUM_SIGNALS, CYCLE, GREEN, GAP, K0, UPDATE_FREQUENCY, FRO, BRO } from "../constants/constants.js";
-import { map, range, forEach, isEqual } from 'lodash';
-import { Signal, MemoryDatum } from '../constants/types';
+import { map, range, forEach, isEqual,lt,gte } from 'lodash';
+import { Signal } from '../constants/types';
 import type { Action, Signals, Cars, Time } from '../constants/types';
 import { TICK } from '../constants/actions';
 const EmptyLinks: Array < number > = map(range(NUM_SIGNALS), i => 0);
@@ -12,10 +12,11 @@ function retimeSignals(signals: Signals, moving:Cars, time:Time):void {
       for (var car of moving) {
         let whichLink = Math.floor(car.x / GAP);
         links[whichLink]++;
-      }rd
+      }
 
       forEach(signals.reverse(), (s,i)=>{
-        s.oA = (s.next.oA + (links[i] / GAP > K0 ? BRO : FRO))%CYCLE;
+        let newOffset = (s.next.oA + (links[i] / GAP > K0 ? BRO : FRO))%CYCLE;
+        s.oA = newOffset;
       });
     }
 }
@@ -24,15 +25,7 @@ export default function(signals: Signals, moving: Cars, time: Time, action: Acti
   switch (action.type) {
     case TICK:
       // retimeSignals(signals, moving, time);
-      for (var s of signals) {
-        if (isEqual(time % CYCLE, s.oA)) {
-          s.green = true;
-          s.lastGreen = time;
-        } else if (isEqual(time % CYCLE, (s.oA + GREEN) % CYCLE)) {
-          s.remember(time);
-          s.green = false;
-        }
-      }
+      for(var s of signals) s.tick(time);
       return signals;
     default:
       return signals;

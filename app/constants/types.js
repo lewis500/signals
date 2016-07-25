@@ -1,7 +1,9 @@
 //@flow
 import {
   assign,
-  random, takeRight
+  random, takeRight,
+  isEqual,
+  lt,gte
 } from 'lodash';
 import {
   ROAD_LENGTH,
@@ -10,6 +12,8 @@ import {
   VF,
   RUSH_LENGTH,
   MEMORY_LENGTH,
+  CYCLE,
+  GREEN,
   TRIP_LENGTH
 } from "./constants.js";
 
@@ -44,17 +48,10 @@ export type TrafficState = {
   measurement: Measurement;
 };
 
-export class HistoryDatum {
+export type HistoryDatum = {
   a: number;
   e: number;
   t: Time;
-  constructor(a: number, e: number, t: Time): void {
-    assign(this, {
-      a,
-      e,
-      t
-    });
-  }
 };
 
 export type History = Array < HistoryDatum > ;
@@ -97,20 +94,26 @@ export class MFDEntry {
 
 export type MFD = Array < MFDEntry > ;
 
-export class MemoryDatum {
-  a: Time;
-  b: Time;
-  id: number;
-  constructor(a: number, b: number, id: number): void {
-    assign(this, {
-      a,
-      b,
-      id
-    });
-  }
-};
+// export class MemoryDatum {
+//   a: Time;
+//   b: Time;
+//   id: number;
+//   constructor(a: number, b: number, id: number): void {
+//     assign(this, {
+//       a,
+//       b,
+//       id
+//     });
+//   }
+// };
 
-type Memory = Array < MemoryDatum > ;
+// type
+
+type MemoryDatum = {
+  time: number;
+  green: bool;
+  index: number;
+}
 
 export class Signal {
   green: bool;
@@ -119,7 +122,7 @@ export class Signal {
   x: Loc;
   index: number;
   oA: number;
-  memory: Memory;
+  memory: Array<MemoryDatum>;
   constructor(index: number, oA: number, x: number): void {
     assign(this, {
       x,
@@ -132,7 +135,20 @@ export class Signal {
   setNext(signal: Signal): void {
     this.next = signal;
   };
-  remember(time: Time): void {
-    this.memory = takeRight(this.memory,4).concat(new MemoryDatum(this.lastGreen, time, this.index))
+  testForGreen(time: number):bool{
+    let relTime = time%CYCLE;
+    if(this.oA < (this.oA + GREEN)%CYCLE){
+      return (relTime < (this.oA + GREEN)%CYCLE) && (relTime >= this.oA);
+    } else {
+      return (relTime < (this.oA + GREEN)%CYCLE) || (relTime >= this.oA);
+    }
+  };
+  tick(time:number):void{
+    if(this.testForGreen(time)) this.green = true;
+    else this.green = false;
+    if(time%10==0){
+      this.memory = takeRight(this.memory,4*CYCLE)
+      .concat({green: this.green, time, index: this.index});
+    }
   };
 };
