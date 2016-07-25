@@ -1,11 +1,8 @@
 TO DO
 
 SHORT TERM
-+ calculate the super-mfd using the technique from macro-offset file
-+ make offset a state variable
++ just calculate offsets
 
 MEDIUM TERM
 
-
 LONG TERM
-+ try using an event queue for the signals

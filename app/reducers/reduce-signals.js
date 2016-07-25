@@ -6,30 +6,24 @@ import type { Action, Signals, Cars, Time } from '../constants/types';
 import { TICK } from '../constants/actions';
 const EmptyLinks: Array < number > = map(range(NUM_SIGNALS), i => 0);
 
-function retimeSignals(signals: Signals, moving:Cars, time:Time) {
-  switch (time % UPDATE_FREQUENCY) {
-    case 0:
+function retimeSignals(signals: Signals, moving:Cars, time:Time):void {
+  if (time % UPDATE_FREQUENCY) {
       const links:Array<number> = EmptyLinks.slice();
       for (var car of moving) {
         let whichLink = Math.floor(car.x / GAP);
         links[whichLink]++;
-      }
+      }rd
 
       forEach(signals.reverse(), (s,i)=>{
         s.oA = (s.next.oA + (links[i] / GAP > K0 ? BRO : FRO))%CYCLE;
       });
-
-      return signals;
-
-    default:
-      return signals;
-  }
+    }
 }
 
 export default function(signals: Signals, moving: Cars, time: Time, action: Action): Signals {
   switch (action.type) {
     case TICK:
-      // signals = retimeSignals(signals, moving, time);
+      // retimeSignals(signals, moving, time);
       for (var s of signals) {
         if (isEqual(time % CYCLE, s.oA)) {
           s.green = true;
