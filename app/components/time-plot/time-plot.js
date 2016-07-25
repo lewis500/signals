@@ -17,7 +17,9 @@ function yScale(v:number):number{
 }
 
 function xScale (v:number,time:number):number{
-  return (v - time + CYCLE) / CYCLE * WIDTH;
+  let a = time - 4*CYCLE,
+    b = time;
+  return (v - a) / (4*CYCLE) * WIDTH;
 }
 
 const SignalBars = ({ signals, xScale, time }) => {

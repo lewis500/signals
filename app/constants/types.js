@@ -1,7 +1,7 @@
 //@flow
 import {
   assign,
-  random
+  random, takeRight
 } from 'lodash';
 import {
   ROAD_LENGTH,
@@ -128,14 +128,11 @@ export class Signal {
       memory: [],
       lastGreen: 0
     });
-  }
+  };
   setNext(signal: Signal): void {
     this.next = signal;
-  }
+  };
   remember(time: Time): void {
-    this.memory = [
-      ...this.memory.slice(0, 4),
-      new MemoryDatum(this.lastGreen, time, this.index)
-    ];
-  }
+    this.memory = takeRight(this.memory,4).concat(new MemoryDatum(this.lastGreen, time, this.index))
+  };
 };
