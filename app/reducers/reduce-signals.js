@@ -24,7 +24,6 @@ function retimeSignals(signals: Signals, moving:Cars, time:Time):void {
 export default function(signals: Signals, moving: Cars, time: Time, action: Action): Signals {
   switch (action.type) {
     case TICK:
-      // retimeSignals(signals, moving, time);
       for(var s of signals) s.tick(time);
       return signals;
     default:

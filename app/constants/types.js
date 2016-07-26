@@ -94,24 +94,9 @@ export class MFDEntry {
 
 export type MFD = Array < MFDEntry > ;
 
-// export class MemoryDatum {
-//   a: Time;
-//   b: Time;
-//   id: number;
-//   constructor(a: number, b: number, id: number): void {
-//     assign(this, {
-//       a,
-//       b,
-//       id
-//     });
-//   }
-// };
-
-// type
-
 type MemoryDatum = {
-  time: number;
-  green: bool;
+  green: number;
+  red: number;
   index: number;
 }
 
@@ -128,7 +113,7 @@ export class Signal {
       x,
       index,
       oA,
-      memory: [],
+      memory: [{index, green: 0, red:0}],
       lastGreen: 0
     });
   };
@@ -144,11 +129,15 @@ export class Signal {
     }
   };
   tick(time:number):void{
-    if(this.testForGreen(time)) this.green = true;
-    else this.green = false;
-    if(time%10==0){
-      this.memory = takeRight(this.memory,4*CYCLE)
-      .concat({green: this.green, time, index: this.index});
+    let oldGreen = this.green,
+      newGreen = this.testForGreen(time);
+    if(newGreen) {
+      this.green = true;
+      if(!oldGreen) this.memory = takeRight(this.memory,4)
+          .concat({green: time, red: time, index: this.index});
+      else this.memory[this.memory.length-1].red = time;
+    }else{ //if red
+      this.green = false;
     }
   };
 };

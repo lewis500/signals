@@ -22,16 +22,6 @@ function xScale (v:number,time:number):number{
   return (v - a) / (4*CYCLE) * WIDTH;
 }
 
-// const SignalBars = ({ signals, xScale, time }) => {
-//
-//
-//   return signalsRects;
-//
-//   // return g({
-//   //   className: 'g-signals'
-//   // }, signalsRects);
-// };
-
 type Props = {
   signals: Signals;
   time: Time;
@@ -41,18 +31,24 @@ class TimePlot extends React.Component{
   props:Props;
 
   createSignals(){
-    let ss = flatten(map(this.props.signals, d => d.memory));
-    return map(ss, (d, i) => {
-      return rect({
-        transform: `translate(${xScale(d.time,this.props.time)},${yScale(d.index)})`,
-        className: 'signal-bar ' + (d.green ? 'green' : 'red'),
-        key: i,
-        width: 12,
-        x: -6,
-        y: -1,
-        height: 2
+    return map(this.props.signals, s=>{
+      const ss = map(s.memory, (d,i)=>{
+        return rect({
+          transform: `translate(${xScale(d.green, this.props.time)},0)`,
+          className: 'signal-bar',
+          key: i,
+          width: Math.max(0,xScale(d.red,this.props.time) - xScale(d.green, this.props.time)),
+          x: -6,
+          y: -1,
+          height: 2
+        });
       });
-    });
+      return g({
+        transform: `translate(0,${yScale(s.index)})`,
+        className: 'g-signal',
+        key: s.index
+      }, ss);
+    })
   };
 
   render() {
