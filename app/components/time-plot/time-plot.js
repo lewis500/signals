@@ -1,9 +1,8 @@
 //@flow
 import React from 'react';
-import col from "../../style/colors";
 import './style-time-plot.scss';
-import {flatten,map} from 'lodash';
-import { NUM_SIGNALS, CYCLE, GREEN } from "../../constants/constants.js";
+import {map} from 'lodash';
+import { NUM_SIGNALS, CYCLE } from "../../constants/constants.js";
 import type {Signals,Time} from '../../constants/types';
 const { g, rect } = React.DOM;
 
@@ -25,14 +24,18 @@ function xScale (v:number,time:number):number{
 type Props = {
   signals: Signals;
   time: Time;
-}
+};
 
 class TimePlot extends React.Component{
   props:Props;
 
   createSignals(){
     return map(this.props.signals, s=>{
-      const ss = map(s.memory, (d,i)=>{
+      return g({
+        transform: `translate(0,${yScale(s.index)})`,
+        className: 'g-signal',
+        key: s.index
+      }, map(s.memory, (d,i)=>{
         return rect({
           transform: `translate(${xScale(d.green, this.props.time)},0)`,
           className: 'signal-bar',
@@ -42,13 +45,8 @@ class TimePlot extends React.Component{
           y: -1,
           height: 2
         });
-      });
-      return g({
-        transform: `translate(0,${yScale(s.index)})`,
-        className: 'g-signal',
-        key: s.index
-      }, ss);
-    })
+      }));
+    });
   };
 
   render() {
