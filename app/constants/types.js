@@ -100,9 +100,9 @@ type MemoryDatum = {
   index: number;
 }
 
+
 export class Signal {
   green: bool;
-  lastGreen: number;
   next: Signal;
   x: Loc;
   index: number;
@@ -114,7 +114,6 @@ export class Signal {
       index,
       oA,
       memory: [{index, green: 0, red:0}],
-      lastGreen: 0
     });
   };
   setNext(signal: Signal): void {
