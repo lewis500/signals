@@ -1,8 +1,7 @@
 //@flow
-import { ROAD_LENGTH, NUM_CARS, SPACE, VF, RUSH_LENGTH, MEMORY_LENGTH, TRIP_LENGTH } from "../constants/constants.js";
-import { range, filter, isEqual, forEach, random, partition, concat, sortBy } from 'lodash';
-import { sum } from 'd3-array';
-import { Car,  } from '../constants/types';
+import { ROAD_LENGTH, NUM_CARS, SPACE, GAP, RUSH_LENGTH,NUM_SIGNALS, MEMORY_LENGTH, TRIP_LENGTH } from "../constants/constants.js";
+import { range, filter, isEqual, forEach, random, sum, map, partition, sortBy } from 'lodash';
+import { Car} from '../constants/types';
 import type { HistoryDatum, Loc, History, Action, Time, Signal, Cars, Signals, Cell, TrafficState, Measurement } from '../constants/types';
 import { TICK } from '../constants/actions';
 
@@ -13,8 +12,10 @@ const population: Cars = range(NUM_CARS)
 		return new Car(x, tA, i);
 	});
 
-let emptyCars: Cars = [];
-let emptyHistory: History = [];
+const emptyCars: Cars = [],
+ emptyHistory: History = [];
+
+export const EMPTY_LINKS: Array < number > = map(range(NUM_SIGNALS), i => 0);
 
 export const TRAFFIC_INITIAL = {
 	population,
@@ -22,9 +23,9 @@ export const TRAFFIC_INITIAL = {
 	moving: emptyCars,
 	queueing: emptyCars,
 	history: emptyHistory,
-	cells: range(ROAD_LENGTH)
-		.map(x => -SPACE),
-	measurement: { q: 0, k: 0, q_temp: 0, n_temp: 0 }
+	cells: range(ROAD_LENGTH).map(x => -SPACE),
+	measurement: { q: 0, k: 0, q_temp: 0, n_temp: 0 },
+	densities: EMPTY_LINKS
 };
 
 function reduceTraffic(traffic: TrafficState, signals: Signals, time: Time, action: Action): TrafficState {
@@ -84,6 +85,10 @@ function reduceTraffic(traffic: TrafficState, signals: Signals, time: Time, acti
 			//get rid of the exited people
 			movingNew = filter(movingNew, d => d.moved <= TRIP_LENGTH);
 
+			//count the densities
+			const densities:Array<number> = EMPTY_LINKS.slice();
+			for (var car of movingNew) densities[Math.floor(car.x / GAP)]+=1/GAP;
+
 			return {
 				...traffic,
 				moving: movingNew,
@@ -94,7 +99,8 @@ function reduceTraffic(traffic: TrafficState, signals: Signals, time: Time, acti
 					k,
 					q_temp,
 					n_temp
-				}
+				},
+				densities
 			};
 
 		default:

@@ -46,6 +46,7 @@ export type TrafficState = {
   moving: Cars;
   cells: Cells;
   measurement: Measurement;
+  densities: Array<number>;
 };
 
 export type HistoryDatum = {

@@ -1,26 +1,20 @@
 //@flow
 import { ROAD_LENGTH, NUM_SIGNALS, CYCLE, GREEN, GAP, K0, UPDATE_FREQUENCY, FRO, BRO } from "../constants/constants.js";
-import { map, sum, range, forEach, isEqual,lt,gte } from 'lodash';
+import { map, sum, range, forEach,zip, isEqual,lt,gte } from 'lodash';
 import { Signal } from '../constants/types';
 import type { Action, Signals, Cars, Time } from '../constants/types';
 import { TICK } from '../constants/actions';
-const EmptyLinks: Array < number > = map(range(NUM_SIGNALS), i => 0);
+
 
 const doubleMod = (a,b)=> (a%b + b)%b;
 
-function retimeSignals(signals: Signals, moving:Cars, time:Time):void {
-  if (time %UPDATE_FREQUENCY == 0) {
-      const links:Array<number> = EmptyLinks.slice();
+function retimeSignals(signals: Signals, densities:Array<number>, time:Time):void {
+  if (time%UPDATE_FREQUENCY == 0) {
 
-      //count the accumulations
-      for (var car of moving) links[Math.floor(car.x / GAP)]++;
-
-      //turn accumulations into densities
-      for (var i = 0; i < links.length; i++) links[i] = links[i]/GAP;
 
       //now calculate preliminary relative offsets
-      const ROs = map(links, l=> l > K0 ? BRO : FRO);
-      console.log(ROs);
+      const ROs = map(densities, l=> l > K0 ? BRO : FRO);
+      // console.log(ROs);
 
       //now get the total extra
       const extra = Math.round((sum(ROs)%CYCLE)/NUM_SIGNALS);
@@ -30,18 +24,24 @@ function retimeSignals(signals: Signals, moving:Cars, time:Time):void {
 
       //now make the absolute offsets
       let oA = 0;
-      forEach(signals.reverse(), (s,i,k)=>{
+      forEach(signals, (s,i,k)=>{
         oA = doubleMod(oA + ROsCorrected[i], CYCLE);
         k[i].oA = oA;
       });
+      let toLog = [];
+      // for(var)
+      forEach(signals, (d,i)=>{
+        toLog.push({index: d.index, oA: d.oA, k: densities[i] , rOC: ROsCorrected[i], rOO: ROs[i]});
+      });
+      console.table(toLog);
 
     }
 }
 
-export default function(signals: Signals, moving: Cars, time: Time, action: Action): Signals {
+export default function(signals: Signals, densities: Array<number>, time: Time, action: Action): Signals {
   switch (action.type) {
     case TICK:
-      // retimeSignals(signals, moving, time);
+      retimeSignals(signals, densities, time);
       for(var s of signals) s.tick(time);
       return signals;
     default:
