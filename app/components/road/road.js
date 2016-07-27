@@ -3,9 +3,10 @@ import React from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import col from "../../style/colors";
 import './style-road';
-import { ROAD_LENGTH } from '../../constants/constants.js';
-const PT = React.PropTypes;
-const { rect, g } = React.DOM;
+import { ROAD_LENGTH,NUM_SIGNALS } from '../../constants/constants.js';
+import {arc} from 'd3-shape';
+const { rect, path, g } = React.DOM;
+import {map} from 'lodash';
 
 const RADIUS = 125,
   ROADWIDTH = 10,
@@ -13,6 +14,26 @@ const RADIUS = 125,
   LENGTH = 2 * (RADIUS + MAR + ROADWIDTH);
 
 const rScale = x => x / ROAD_LENGTH * 360;
+
+const makeArc = arc()
+  .innerRadius(RADIUS-20)
+  .outerRadius(RADIUS-10)
+  .startAngle(i=> i/NUM_SIGNALS*Math.PI*2)
+  .endAngle(i=>(i+1)/NUM_SIGNALS*Math.PI*2);
+
+const Arcs = ({densities})=>{
+  const arcs = map(densities, (d,i)=>{
+    return path({
+      className: 'arc',
+      key: i,
+      opacity: d,
+      d: makeArc(i)
+    });
+  });
+  return g({
+    className: 'g-arcs'
+  }, arcs);
+};
 
 const Signals = ({ signals }) => {
   const signalsRects = _.map(signals, d => {
@@ -23,7 +44,7 @@ const Signals = ({ signals }) => {
       y: -5,
       key: d.index,
       fill: d.green ? col.green["500"] : col.red["500"],
-      transform: `rotate(${rScale(d.x)}) translate(0,${RADIUS})`
+      transform: `rotate(${rScale(d.x)}) translate(0,${-RADIUS})`
     });
   });
   return g({
@@ -40,7 +61,7 @@ const Cars = ({ cars }) => {
     x: -1,
     key: d.id,
     fill: col["light-blue"]["500"],
-    transform: `rotate(${rScale(d.x)}) translate(0,${RADIUS})`
+    transform: `rotate(${rScale(d.x)}) translate(0,${-RADIUS})`
   }));
   return g({
     className: 'g-cars'
@@ -62,19 +83,11 @@ class Road extends React.Component{
           <circle r={RADIUS} className="road" strokeWidth={ROADWIDTH}/>
           <Signals signals={this.props.signals}/>
           <Cars cars={this.props.cars}/>
+          <Arcs densities={this.props.densities}/>
         </g>
       </svg>
     );
   }
 }
-
-// const Road = React.createClass({
-//   proptypes: {
-//     signals: PT.array,
-//     densities: PT.array,
-//     cars: PT.array
-//   },
-//
-// });
 
 export default Road;
