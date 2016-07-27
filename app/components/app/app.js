@@ -36,7 +36,10 @@ class AppComponent extends Component {
     return (
       <div>
         <button onClick={this.pausePlay}>Pause/Play</button>
-        <Road signals={this.props.signals} cars={this.props.traffic.moving}/>
+        <Road
+          signals={this.props.signals}
+          densities={this.props.traffic.densities}
+         cars={this.props.traffic.moving}/>
         <CumPlot history={this.props.traffic.history} />
         <TimePlot signals={this.props.signals} time={this.props.time}/>
       </div>

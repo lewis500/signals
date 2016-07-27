@@ -47,11 +47,14 @@ const Cars = ({ cars }) => {
   }, carRects);
 };
 
-const Road = React.createClass({
-  proptypes: {
-    signals: PT.array,
-    cars: PT.array
-  },
+type Props = {
+  signals: Array<Signal>,
+  cars: Array<Car>,
+  densities: Array<number>
+};
+
+class Road extends React.Component{
+  props:Props;
   render() {
     return (
       <svg width={LENGTH} height={LENGTH}>
@@ -63,6 +66,15 @@ const Road = React.createClass({
       </svg>
     );
   }
-});
+}
+
+// const Road = React.createClass({
+//   proptypes: {
+//     signals: PT.array,
+//     densities: PT.array,
+//     cars: PT.array
+//   },
+//
+// });
 
 export default Road;
