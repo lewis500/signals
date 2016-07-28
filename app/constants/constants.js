@@ -1,6 +1,6 @@
 //@flow
-export const NUM_SIGNALS = 30;
-export const ROAD_LENGTH = 1000;
+export const NUM_SIGNALS = 32;
+export const ROAD_LENGTH = 1024;
 export const NUM_CARS = 2000;
 export const RUSH_LENGTH = 2200;
 export const TRIP_LENGTH = 220;

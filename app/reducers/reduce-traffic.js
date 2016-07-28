@@ -1,6 +1,6 @@
 //@flow
 import { ROAD_LENGTH, NUM_CARS, SPACE, GAP, RUSH_LENGTH,NUM_SIGNALS, MEMORY_LENGTH, TRIP_LENGTH } from "../constants/constants.js";
-import { range, filter, isEqual, forEach, random, sum, map, partition, sortBy } from 'lodash';
+import { range, filter, isEqual, forEach, random, sum, map, partition, sortBy, mean } from 'lodash';
 import { Car} from '../constants/types';
 import type { HistoryDatum, Loc, History, Action, Time, Signal, Cars, Signals, Cell, TrafficState, Measurement } from '../constants/types';
 import { TICK } from '../constants/actions';
@@ -27,6 +27,28 @@ export const TRAFFIC_INITIAL = {
 	measurement: { q: 0, k: 0, q_temp: 0, n_temp: 0 },
 	densities: EMPTY_LINKS
 };
+
+function calcDensities(moving:Cars, g:number):Array<number>{
+	//count the densities
+	const densities = EMPTY_LINKS.slice(),
+		result = EMPTY_LINKS.slice(),
+		NUM_SLICES = Math.pow(2,g),
+		NUM_PER_SLICE = NUM_SIGNALS/NUM_SLICES;
+
+	for (var car of moving) densities[Math.floor(car.x / GAP)]+=1/GAP;
+
+	range(NUM_SLICES).forEach(i=>{
+		const a = i*NUM_PER_SLICE,
+			b = (i+1)*NUM_PER_SLICE,
+			slices = densities.slice(a,b),
+			mean = mean(slices);
+			range(a,b).forEach(i=>{
+				result[i] = mean;
+			});
+	});
+
+	return result;
+}
 
 function reduceTraffic(traffic: TrafficState, signals: Signals, time: Time, action: Action): TrafficState {
 	switch(action.type) {
@@ -85,9 +107,7 @@ function reduceTraffic(traffic: TrafficState, signals: Signals, time: Time, acti
 			//get rid of the exited people
 			movingNew = filter(movingNew, d => d.moved <= TRIP_LENGTH);
 
-			//count the densities
-			const densities:Array<number> = EMPTY_LINKS.slice();
-			for (var car of movingNew) densities[Math.floor(car.x / GAP)]+=1/GAP;
+			const densities = calcDensities(movingNew, 0);
 
 			return {
 				...traffic,
