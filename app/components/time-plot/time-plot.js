@@ -2,13 +2,14 @@
 import React from 'react';
 import './style-time-plot.scss';
 import {map} from 'lodash';
+import Axis from '../axis/axis.js';
 import { NUM_SIGNALS, CYCLE } from "../../constants/constants.js";
 import type {Signals,Time} from '../../constants/types';
 const { g, rect } = React.DOM;
 
 const WIDTH = 500,
-  HEIGHT = 175,
-  MAR = 10,
+  HEIGHT = 200,
+  MAR = 40,
   YDOMAIN = [0, NUM_SIGNALS];
 
 function yScale(v:number):number{
@@ -55,6 +56,25 @@ class TimePlot extends React.Component{
         <g transform={`translate(${MAR},${MAR})`}>
         	<rect width={WIDTH} height={HEIGHT} className='bg'/>
           {this.createSignals()}
+          <Axis
+            domain={[-4*CYCLE, 0]}
+            range={[0,WIDTH]}
+            orientation={'bottom'}
+            height={HEIGHT}
+            width={WIDTH}
+            className='axis'
+            innerTickSize={-HEIGHT}
+            tickValues={[-400,-300,-200,-100,0]}
+          />
+          <Axis
+            domain={[0, NUM_SIGNALS]}
+            range={[HEIGHT,0]}
+            orientation={'left'}
+            height={HEIGHT}
+            width={WIDTH}
+            className='axis'
+            innerTickSize={-WIDTH}
+          />
         </g>
       </svg>
     );
