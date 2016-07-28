@@ -3,6 +3,7 @@ import React from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import col from "../../style/colors";
 import './style-road';
+import {scaleLinear,interpolateInferno} from 'd3-scale';
 import { ROAD_LENGTH,NUM_SIGNALS } from '../../constants/constants.js';
 import {arc} from 'd3-shape';
 const { rect, path, g } = React.DOM;
@@ -21,12 +22,17 @@ const makeArc = arc()
   .startAngle(i=> i/NUM_SIGNALS*Math.PI*2)
   .endAngle(i=>(i+1)/NUM_SIGNALS*Math.PI*2);
 
+// const color = scaleLinear()
+//   .domain([0,.6])
+//   .range(['pink','maroon']);
+const color = interpolateInferno;
 const Arcs = ({densities})=>{
   const arcs = map(densities, (d,i)=>{
     return path({
       className: 'arc',
       key: i,
-      opacity: d,
+      // opacity: d,
+      fill: color(d),
       d: makeArc(i)
     });
   });
@@ -55,10 +61,10 @@ const Signals = ({ signals }) => {
 const Cars = ({ cars }) => {
   const carRects = _.map(cars, d => rect({
     className: 'cars',
-    width: 2,
+    width: 1,
     height: 5,
     y: -2.5,
-    x: -1,
+    x: -.5,
     key: d.id,
     fill: col["light-blue"]["500"],
     transform: `rotate(${rScale(d.x)}) translate(0,${-RADIUS})`

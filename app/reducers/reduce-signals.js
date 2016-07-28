@@ -8,6 +8,8 @@ import { TICK } from '../constants/actions';
 
 const doubleMod = (a,b)=> (a%b + b)%b;
 
+
+
 function retimeSignals(signals: Signals, densities:Array<number>, time:Time):void {
   if (time%UPDATE_FREQUENCY == 0) {
 

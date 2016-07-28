@@ -41,9 +41,9 @@ function calcDensities(moving:Cars, g:number):Array<number>{
 		const a = i*NUM_PER_SLICE,
 			b = (i+1)*NUM_PER_SLICE,
 			slices = densities.slice(a,b),
-			mean = mean(slices);
+			k = mean(slices);
 			range(a,b).forEach(i=>{
-				result[i] = mean;
+				result[i] = k;
 			});
 	});
 
@@ -107,7 +107,7 @@ function reduceTraffic(traffic: TrafficState, signals: Signals, time: Time, acti
 			//get rid of the exited people
 			movingNew = filter(movingNew, d => d.moved <= TRIP_LENGTH);
 
-			const densities = calcDensities(movingNew, 0);
+			const densities = calcDensities(movingNew, 3);
 
 			return {
 				...traffic,

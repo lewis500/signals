@@ -14,13 +14,21 @@ const ROOT_INITIAL = {
 	mfd: MFD_INITIAL,
 };
 
+function tick(state:RootState,action):RootState{
+	const time = state.time+1,
+		signals = signalsReduce(state.signals, state.traffic.densities, time, action),
+		traffic = trafficReduce(state.traffic, signals, time, action);
+	return {...state, signals, traffic , time };
+
+}
+
 function rootReduce(state: RootState = ROOT_INITIAL, action: Action): RootState {
 	switch(action.type) {
 		case TICK:
-			const time = state.time+1,
-				signals = signalsReduce(state.signals, state.traffic.densities, time, action),
-				traffic = trafficReduce(state.traffic, signals, time, action);
-			return {...state, signals, traffic , time };
+			for (var i = 0; i < 5; i++) {
+				state = tick(state,action);
+			}
+			return state;
 		default:
 			return state;
 	}
